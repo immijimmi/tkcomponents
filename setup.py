@@ -4,26 +4,26 @@ with open("README.md", "r", encoding="utf-8") as readme_file:
     long_description = readme_file.read()
 
 setup(
-    name="<package name>",
+    name="tkcomponents",
     packages=[
-        "<main package folder>"
+        "tkcomponents"
     ],
     version="0.1.0",
-    license="MIT",  #####
-    description="<package description>",
+    license="MIT",
+    description="An OOP framework for Tkinter, inspired by React",
     long_description_content_type="text/markdown",
     long_description=long_description,
     author="immijimmi",
     author_email="imranhamid99@msn.com",
-    url="https://github.com/immijimmi/<package name>",
+    url="https://github.com/immijimmi/tkcomponents",
     download_url="",
-    keywords=[  #####
-            
+    keywords=[
+        'ui', 'gui', 'graphical', 'user', 'interface'
     ],
-    install_requires=[  #####
-        
+    install_requires=[
+        'objectextensions>=0.2.0'
     ],
-    classifiers=[  #####
+    classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "Topic :: Software Development :: Libraries :: Application Frameworks",
