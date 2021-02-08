@@ -6,7 +6,7 @@ with open("README.md", "r", encoding="utf-8") as readme_file:
 setup(
     name="tkcomponents",
     packages=[
-        "tkcomponents"
+        "tkcomponents", "tkcomponents.extensions", "tkcomponents.basiccomponents", "tkcomponents.abstractcomponents"
     ],
     version="0.1.0",
     license="MIT",
