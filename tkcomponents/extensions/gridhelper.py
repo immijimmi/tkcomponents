@@ -6,7 +6,7 @@ from ..component import Component
 class GridHelper(Extension):
     @staticmethod
     def extend(target_cls):
-        Extension.set(target_cls, "_apply_frame_stretch", GridHelper.__apply_frame_stretch)
+        Extension._set(target_cls, "_apply_frame_stretch", GridHelper.__apply_frame_stretch)
 
     @staticmethod
     def can_extend(target_cls):
