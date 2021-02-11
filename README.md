@@ -2,9 +2,12 @@
 
 ###### An OOP framework for Tkinter, inspired by React
 
-## Intended Usage
+## Quickstart
 
-### Creating a Component
+### Setup
+
+Below is an example of a custom component, a number label which updates its value periodically.
+
 ```python
 from tkinter import Label, IntVar
 
