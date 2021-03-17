@@ -1,12 +1,18 @@
 from objectextensions import Extendable
 
 from abc import ABC
-from tkinter import Frame
+from tkinter import Frame, Widget
+from typing import Optional, Any, Callable
 
 
 class Component(Extendable, ABC):
-    def __init__(self, container, get_data=None, on_change=lambda: None,
-                 update_interval=None, styles=None):
+    """
+    A blank base component which extends lifecycle methods to be overriden as necessary
+    """
+
+    def __init__(self, container: Widget,
+                 get_data: Optional[Callable[["Component"], Any]] = None, on_change: Callable = lambda: None,
+                 update_interval: Optional[int] = None, styles: Optional[dict] = None):
         super().__init__()
 
         self._container = container
@@ -43,11 +49,19 @@ class Component(Extendable, ABC):
         self._on_change = on_change
 
     @property
-    def exists(self):
+    def exists(self) -> bool:
+        """
+        Should be used to check that the component has not been destroyed, before its state is altered in any way
+        """
+
         return self._outer_frame.winfo_exists()
 
     @property
-    def is_rendered(self):
+    def is_rendered(self) -> bool:
+        """
+        Used internally to check that a component has rendered its contained widgets, before checking their details
+        """
+
         if self._frame is None:
             return False
 
@@ -55,17 +69,21 @@ class Component(Extendable, ABC):
         return self._frame.winfo_exists()
 
     @property
-    def height(self):
+    def height(self) -> int:
         self._outer_frame.update()
         return self._outer_frame.winfo_height()
 
     @property
-    def width(self):
+    def width(self) -> int:
         self._outer_frame.update()
         return self._outer_frame.winfo_width()
 
     @property
-    def height_clearance(self):
+    def height_clearance(self) -> Optional[int]:
+        """
+        Represents the amount of vertical space in the widget (values such as padding and border are removed)
+        """
+
         if not self.is_rendered:
             return None
 
@@ -76,7 +94,11 @@ class Component(Extendable, ABC):
         return self._frame.winfo_height() - total_buffer
 
     @property
-    def width_clearance(self):
+    def width_clearance(self) -> Optional[int]:
+        """
+        Represents the amount of horizontal space in the widget (values such as padding and border are removed)
+        """
+
         if not self.is_rendered:
             return None
 
@@ -86,7 +108,11 @@ class Component(Extendable, ABC):
 
         return self._frame.winfo_width() - total_buffer
 
-    def render(self):
+    def render(self) -> Frame:
+        """
+        This method should be invoked externally, and the returned frame have pack() or grid() called on it
+        """
+
         for child_element in self._outer_frame.winfo_children():
             child_element.destroy()
         self._refresh_frame()
@@ -98,7 +124,11 @@ class Component(Extendable, ABC):
 
         return self._outer_frame
 
-    def _update_loop(self):
+    def _update_loop(self) -> None:
+        """
+        Used internally to handle updating the component once per update interval (if update interval was provided)
+        """
+
         self._frame.after_cancel(self._update_loop)
 
         if not self.exists:
@@ -115,27 +145,41 @@ class Component(Extendable, ABC):
     # Overridable Methods
 
     @property
-    def _needs_render(self):
+    def _needs_render(self) -> bool:
         """
+        Overridable method.
         Should return a True value only once per time a re-render is required.
-        If the component will never need to poll for a re-render, this method need not be overridden.
+        If the component will never need to poll for a re-render, this method need not be overridden
         """
+
         return False
 
-    def _refresh_frame(self):
+    def _refresh_frame(self) -> None:
         """
-        Only needs overriding if the component as a container needs extra functionality.
+        Overridable method.
+        Handles creating a new blank frame to store in self._frame at the top of each render() call.
+        Only needs overriding if this blank frame needs extra base functionality
+        before any child components are rendered to it
         """
+
         self._frame = Frame(self._outer_frame, **self.styles["frame"])
 
         self._frame.grid(row=0, column=0, sticky="nswe")
 
-    def _update(self):
+    def _update(self) -> None:
         """
-        If the component will not need to directly update any values outside of a new render,
-        this method need not be overridden.
+        Overridable method.
+        Handles updating the component state once per update interval (if update interval was provided).
+        If the component will not need to directly update its state outside of a new render,
+        this method need not be overridden
         """
+
         pass
 
-    def _render(self):
+    def _render(self) -> None:
+        """
+        Overridable method.
+        Any child components should be rendered to self._frame in this method
+        """
+
         raise NotImplementedError
