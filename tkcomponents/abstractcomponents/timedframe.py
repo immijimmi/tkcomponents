@@ -26,8 +26,11 @@ class TimedFrame(Component, ABC):
             elapsed_proportion = min(1, (elapsed.total_seconds() * 1000) / self.duration)
             return elapsed_proportion
 
+        self.children["progress_bar"] = None
+
         self._frame__main = Frame(self._outer_frame, **self.styles["frame"])
-        progress_bar = ProgressBar(
+
+        self.children["progress_bar"] = ProgressBar(
             self._frame__main,
             get_data=get_data__progress_bar,
             on_change=lambda bar: self._on_expire(self),
@@ -37,7 +40,7 @@ class TimedFrame(Component, ABC):
                 **self.styles["progress_bar"]
             }
         )
-        progress_bar_frame = progress_bar.render()
+        progress_bar_frame = self.children["progress_bar"].render()
         self._frame = Frame(self._frame__main, **self.styles["inner_frame"])
 
         self._frame__main.rowconfigure(0, weight=1)
