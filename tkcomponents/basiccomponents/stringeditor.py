@@ -68,7 +68,7 @@ class StringEditor(Component.with_extensions(GridHelper)):
 
     def __apply_entry_style(self, style_key):
         """
-        This method exists to minimise calls to Entry.configure(), as they can impact insertion cursor functionality
+        This method exists to minimise calls to .configure(), as they can impact insertion cursor functionality
         """
 
         if style_key != self.__entry_style__current:
