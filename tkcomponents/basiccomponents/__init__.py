@@ -1,3 +1,4 @@
+from .constants import Constants
 from .togglebutton import ToggleButton
 from .numberstepper import NumberStepper
 from .timercontrol import TimerControl
@@ -8,4 +9,4 @@ from .numbersteppertable import NumberStepperTable
 from .progressbar import ProgressBar
 from .alert import Alert
 from .stringeditor import StringEditor
-from .constants import Constants
+from .multilinestringeditor import MultilineStringEditor
