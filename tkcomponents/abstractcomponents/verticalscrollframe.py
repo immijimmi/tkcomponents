@@ -10,6 +10,10 @@ class VerticalScrollFrame(Component, ABC):
         super().__init__(container, get_data=get_data, on_change=on_change,
                          update_interval=update_interval, styles=styles)
 
+        """
+        To make this frame fit perfectly into a containing Component instance, get_height() should
+        return that component's .height_clearance property
+        """
         self._get_height = get_height
 
         styles = {} if not styles else styles
