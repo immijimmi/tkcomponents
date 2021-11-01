@@ -17,7 +17,7 @@ class DateStepper(Component.with_extensions(GridHelper)):
 
         self._date_ticker = DateTicker()
 
-        styles = {} if not styles else styles
+        styles = styles or {}
         self.styles["button"] = styles.get("button", {})
         self.styles["label"] = styles.get("label", {})
 

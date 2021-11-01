@@ -16,7 +16,7 @@ class VerticalScrollFrame(Component, ABC):
         """
         self._get_height = get_height
 
-        styles = {} if not styles else styles
+        styles = styles or {}
         self.styles["inner_frame"] = styles.get("inner_frame", {})
         self.styles["canvas"] = styles.get("canvas", {})
         self.styles["scrollbar"] = styles.get("scrollbar", {})

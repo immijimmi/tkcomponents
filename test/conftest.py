@@ -17,7 +17,7 @@ def nested_button_cls():
             super().__init__(container, get_data=get_data, on_change=on_change,
                              update_interval=update_interval, styles=styles)
 
-            styles = {} if not styles else styles
+            styles = styles or {}
             self.styles["button"] = styles.get("button", {})
 
         def _render(self):
@@ -34,7 +34,7 @@ def nested_button_cls():
             super().__init__(container, get_data=get_data, on_change=on_change,
                              update_interval=update_interval, styles=styles)
 
-            styles = {} if not styles else styles
+            styles = styles or {}
             self.styles["button_wrapper"] = styles.get("button_wrapper", {})
 
         def _render(self):

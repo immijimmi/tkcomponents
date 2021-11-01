@@ -11,7 +11,7 @@ class TimerControl(Component.with_extensions(GridHelper)):
         super().__init__(container, get_data=get_data, on_change=on_change,
                          update_interval=update_interval, styles=styles)
 
-        styles = {} if not styles else styles
+        styles = styles or {}
         self.styles["button"] = styles.get("button", {})
         self.styles["label"] = styles.get("label", {})
 

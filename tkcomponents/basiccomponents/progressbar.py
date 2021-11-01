@@ -15,7 +15,7 @@ class ProgressBar(Component.with_extensions(GridHelper)):
         self.is_reversed = is_reversed
         self.is_expired = False
 
-        styles = {} if not styles else styles
+        styles = styles or {}
         self.styles["filled_bar_frame"] = styles.get("filled_bar_frame", {})
         self.styles["empty_bar_frame"] = styles.get("empty_bar_frame", {})
         self.styles["width"] = styles.get("width", None)

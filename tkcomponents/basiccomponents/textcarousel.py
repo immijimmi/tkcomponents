@@ -14,7 +14,7 @@ class TextCarousel(Component.with_extensions(GridHelper)):
 
         self.index = index
 
-        styles = {} if not styles else styles
+        styles = styles or {}
         self.styles["button"] = styles.get("button", {})
         self.styles["label"] = styles.get("label", {})
 

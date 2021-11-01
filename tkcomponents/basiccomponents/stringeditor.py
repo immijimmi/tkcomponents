@@ -10,7 +10,7 @@ class StringEditor(Component.with_extensions(GridHelper)):
         super().__init__(container, get_data=get_data, on_change=on_change,
                          update_interval=update_interval, styles=styles)
 
-        styles = {} if not styles else styles
+        styles = styles or {}
         self.styles["entry"] = styles.get("entry", {})
         self.styles["entry_saved"] = styles.get("entry_saved", {})
         self.styles["entry_unsaved"] = styles.get("entry_unsaved", {})

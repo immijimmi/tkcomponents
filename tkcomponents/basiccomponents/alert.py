@@ -10,7 +10,7 @@ class Alert(TimedFrame.with_extensions(GridHelper)):
         super().__init__(container, duration, on_expire=on_expire, get_data=get_data,
                          update_interval=update_interval, styles=styles)
 
-        styles = {} if not styles else styles
+        styles = styles or {}
         self.styles["label"] = styles.get("label", {})
         self.styles["button"] = styles.get("button", {})
 

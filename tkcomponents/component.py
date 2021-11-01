@@ -32,12 +32,12 @@ class Component(Extendable, ABC):
         Any data supplied in the `styles` param when .__init__() is called must be manually added to self.styles in a
         constructor somewhere in the inheritance chain, otherwise it will be discarded.
         """
-        # All element styles should be stored here, as their own dicts
         self.styles: Dict[str, dict] = {}
-        styles = {} if not styles else styles
+
+        styles = styles or {}
         self.styles["frame"] = styles.get("frame", {})
 
-        # Use this space to keep hold of any elements that might need configuring in _update or _get_data
+        # Use this attribute to store references to any child elements
         self.children = {}
 
         self._update_interval = update_interval  # Milliseconds

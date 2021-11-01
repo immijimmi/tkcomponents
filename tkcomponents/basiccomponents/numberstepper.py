@@ -21,7 +21,7 @@ class NumberStepper(Component.with_extensions(GridHelper)):
 
         self._step_amounts = step_amounts  # Provide only positive values, they will be mirrored for negative values
 
-        styles = {} if not styles else styles
+        styles = styles or {}
         self.styles["button"] = styles.get("button", {})
         self.styles["label"] = styles.get("label", {})
 

@@ -25,7 +25,7 @@ class NumberStepperTable(Component.with_extensions(GridHelper)):
         self.axis_labels = axis_labels
         self.axis_values = axis_values
 
-        styles = {} if not styles else styles
+        styles = styles or {}
         self.styles["x_label"] = styles.get("x_label", {})
         self.styles["y_label"] = styles.get("y_label", {})
 

@@ -15,7 +15,7 @@ class ToggleButton(Component):
             False: text_values.get(False, "Show")
         }
 
-        styles = {} if not styles else styles
+        styles = styles or {}
         self.styles["button"] = styles.get("button", {})
 
         self.is_on = self._get_data(self) if self._get_data else False

@@ -16,7 +16,7 @@ class TimedFrame(Component, ABC):
         self.duration = duration  # Provide in milliseconds, as with update_interval
         self._on_expire = on_expire
 
-        styles = {} if not styles else styles
+        styles = styles or {}
         self.styles["progress_bar"] = styles.get("progress_bar", {})
         self.styles["inner_frame"] = styles.get("inner_frame", {})
 

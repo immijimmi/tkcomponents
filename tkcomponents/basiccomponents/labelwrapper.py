@@ -9,7 +9,7 @@ class LabelWrapper(Component):
         super().__init__(container, get_data=get_data,
                          update_interval=update_interval, styles=styles)
 
-        styles = {} if not styles else styles
+        styles = styles or {}
         self.styles["label"] = styles.get("label", {})
 
         self._text__var = StringVar()
