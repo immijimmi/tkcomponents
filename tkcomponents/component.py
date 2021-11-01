@@ -12,7 +12,7 @@ class Component(Extendable, ABC):
 
     def __init__(self, container: Widget,
                  get_data: Optional[Callable[["Component"], Any]] = None, on_change: Callable = lambda: None,
-                 update_interval: Optional[int] = None, styles: Optional[dict] = None):
+                 update_interval: Optional[int] = None, styles: Optional[Dict[str, dict]] = None):
         super().__init__()
 
         self._container = container
@@ -33,7 +33,7 @@ class Component(Extendable, ABC):
         constructor somewhere in the inheritance chain, otherwise it will be discarded.
         """
         # All element styles should be stored here, as their own dicts
-        self.styles: Dict[str, Dict] = {}
+        self.styles: Dict[str, dict] = {}
         styles = {} if not styles else styles
         self.styles["frame"] = styles.get("frame", {})
 
