@@ -2,7 +2,7 @@ from objectextensions import Extendable
 
 from abc import ABC
 from tkinter import Frame, Widget
-from typing import Optional, Any, Callable
+from typing import Optional, Any, Callable, Dict
 
 
 class Component(Extendable, ABC):
@@ -24,8 +24,16 @@ class Component(Extendable, ABC):
         self._outer_frame.rowconfigure(0, weight=1)
         self._outer_frame.columnconfigure(0, weight=1)
 
+        """
+        All element styles should be stored here, as their own dicts under a relevant string key.
+        self.styles can contain multiple levels of nesting, so that any styles that are passed down to rendered
+        child components can then be passed down in turn to the further child components
+
+        Any data supplied in the `styles` param when .__init__() is called must be manually added to self.styles in a
+        constructor somewhere in the inheritance chain, otherwise it will be discarded.
+        """
         # All element styles should be stored here, as their own dicts
-        self.styles = {}
+        self.styles: Dict[str, Dict] = {}
         styles = {} if not styles else styles
         self.styles["frame"] = styles.get("frame", {})
 
