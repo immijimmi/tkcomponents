@@ -35,14 +35,15 @@ class Component(Extendable, ABC):
         self._update_interval = update_interval  # Milliseconds
 
         """
-        This function should receive this component instance as a parameter and return any data from the
+        The below function should receive this component instance as a parameter and return any data from the
         application state that is needed by this component.
         If it is set to None rather than a function, this indicates that there is no outside data source.
         Other aspects of this component (styles, etc.) can be edited during the execution of this function.
         """
         self._get_data = get_data
+
         """
-        When the state of this component changes, this function should be called and passed this component instance
+        When the state of this component changes, the below function should be called and passed this component instance
         and any event data as parameters.
         The function should perform any additional external work needed.
         """
