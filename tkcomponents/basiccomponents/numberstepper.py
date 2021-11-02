@@ -17,9 +17,8 @@ class NumberStepper(Component.with_extensions(GridHelper)):
         self.min = limits[0]
         self.max = limits[1]
 
-        self._is_horizontal = is_horizontal
-
-        self._step_amounts = step_amounts  # Provide only positive values, they will be mirrored for negative values
+        self.is_horizontal = is_horizontal
+        self.step_amounts = step_amounts  # Provide only positive values, they will be mirrored for negative values
 
         styles = styles or {}
         self.styles["button"] = styles.get("button", {})
@@ -43,14 +42,14 @@ class NumberStepper(Component.with_extensions(GridHelper)):
         self.children["plus_buttons"] = []
         self.children["label"] = None
 
-        row_stretch = [0] if self._is_horizontal else [len(self._step_amounts)]
-        column_stretch = [len(self._step_amounts)] if self._is_horizontal else [0]
+        row_stretch = [0] if self.is_horizontal else [len(self.step_amounts)]
+        column_stretch = [len(self.step_amounts)] if self.is_horizontal else [0]
         self._apply_frame_stretch(rows=row_stretch, columns=column_stretch)
 
         row_index, column_index = 0, 0
 
-        if self._is_horizontal:
-            for step_amount in reversed(self._step_amounts):
+        if self.is_horizontal:
+            for step_amount in reversed(self.step_amounts):
                 button = Button(self._frame, text="-{0}".format("" if step_amount == 1 else step_amount),
                                 command=partial(self._handle_click, -step_amount), **self.styles["button"])
                 self.children["minus_buttons"].append(button)
@@ -61,7 +60,7 @@ class NumberStepper(Component.with_extensions(GridHelper)):
             self.children["label"].grid(row=row_index, column=column_index, sticky="nswe")
             column_index += 1
 
-            for step_amount in self._step_amounts:
+            for step_amount in self.step_amounts:
                 button = Button(self._frame, text="+{0}".format("" if step_amount == 1 else step_amount),
                                 command=partial(self._handle_click, step_amount), **self.styles["button"])
                 self.children["plus_buttons"].append(button)
@@ -69,7 +68,7 @@ class NumberStepper(Component.with_extensions(GridHelper)):
                 column_index += 1
 
         else:
-            for step_amount in reversed(self._step_amounts):
+            for step_amount in reversed(self.step_amounts):
                 button = Button(self._frame, text="+{0}".format("" if step_amount == 1 else step_amount),
                                 command=partial(self._handle_click, step_amount), **self.styles["button"])
                 self.children["plus_buttons"].append(button)
@@ -80,7 +79,7 @@ class NumberStepper(Component.with_extensions(GridHelper)):
             self.children["label"].grid(row=row_index, column=column_index, sticky="nswe")
             row_index += 1
 
-            for step_amount in self._step_amounts:
+            for step_amount in self.step_amounts:
                 button = Button(self._frame, text="-{0}".format("" if step_amount == 1 else step_amount),
                                 command=partial(self._handle_click, -step_amount), **self.styles["button"])
                 self.children["minus_buttons"].append(button)

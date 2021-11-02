@@ -14,6 +14,7 @@ class TimedFrame(Component, ABC):
 
         self.started = datetime.now()
         self.duration = duration  # Provide in milliseconds, as with update_interval
+
         self._on_expire = on_expire
 
         styles = styles or {}

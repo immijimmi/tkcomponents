@@ -15,12 +15,13 @@ class Alert(TimedFrame.with_extensions(GridHelper)):
         self.styles["button"] = styles.get("button", {})
 
         self.value = self._get_data(self)
-        self.value__var = StringVar()
-        self.value__var.set(self.value)
+
+        self._value__var = StringVar()
+        self._value__var.set(self.value)
 
     def _update(self):
         self.value = self._get_data(self)
-        self.value__var.set(self.value)
+        self._value__var.set(self.value)
 
     def _render(self):
         def command__button():
@@ -32,7 +33,7 @@ class Alert(TimedFrame.with_extensions(GridHelper)):
 
         self._apply_frame_stretch(columns=[0], rows=[0])
 
-        label = Label(self._frame, textvariable=self.value__var, **self.styles["label"])
+        label = Label(self._frame, textvariable=self._value__var, **self.styles["label"])
         self.children["label"] = label
 
         button = Button(self._frame, text=Constants.SYMBOLS["cancel"], command=command__button, **self.styles["button"])

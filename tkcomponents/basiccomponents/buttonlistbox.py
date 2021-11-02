@@ -16,6 +16,7 @@ class ButtonListBox(VerticalScrollFrame):
 
         self.values = {}
         self.order = []
+
         for data_obj in self._get_data(self):
             self.order.append(data_obj["value"])
             self.values.update({
