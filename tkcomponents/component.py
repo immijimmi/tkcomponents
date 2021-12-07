@@ -18,7 +18,7 @@ class Component(Extendable, ABC):
         self._container = container
 
         self._outer_frame = Frame(self._container)
-        self._frame = None  # Add child elements to this frame in _render()
+        self._frame = None  # Add child elements to this frame in ._render()
 
         # Allow the outer frame to expand to fill the container
         self._outer_frame.rowconfigure(0, weight=1)
