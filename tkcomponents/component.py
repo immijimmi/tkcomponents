@@ -133,6 +133,20 @@ class Component(Extendable, ABC):
 
         return self._outer_frame
 
+    def update(self) -> None:
+        """
+        This method should be invoked externally if necessary,
+        in order to reflect minor changes (that do not require a full re-render)
+        """
+
+        if not self.exists:
+            return
+
+        self._update()
+
+        if self._needs_render:
+            self.render()
+
     def _update_loop(self) -> None:
         """
         Used internally to handle updating the component once per update interval (if update interval was provided)
