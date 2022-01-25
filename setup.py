@@ -9,7 +9,7 @@ setup(
         "tkcomponents", "tkcomponents.extensions", "tkcomponents.basiccomponents", "tkcomponents.abstractcomponents",
         "tkcomponents.basiccomponents.classes"
     ],
-    version="1.0.0",
+    version="1.1.0",
     license="MIT",
     description="An OOP framework for Tkinter, inspired by React",
     long_description_content_type="text/markdown",
@@ -17,7 +17,7 @@ setup(
     author="immijimmi",
     author_email="imranhamid99@msn.com",
     url="https://github.com/immijimmi/tkcomponents",
-    download_url="https://github.com/immijimmi/tkcomponents/archive/refs/tags/v1.0.0.tar.gz",
+    download_url="https://github.com/immijimmi/tkcomponents/archive/refs/tags/v1.1.0.tar.gz",
     keywords=[
         'ui', 'gui', 'graphical', 'user', 'interface'
     ],
