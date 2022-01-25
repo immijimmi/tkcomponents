@@ -120,8 +120,9 @@ class Component(Extendable, ABC):
     def render(self) -> Frame:
         """
         This method should be invoked externally, and the returned frame have pack() or grid() called on it.
-        It will always be called at least once, when setting up/populating the parent widget, but can be
-        called again if its child widgets need to be refreshed entirely
+        It will always need to be called at least once, when setting up/populating the parent widget
+        to the current instance, but can be called again if child widgets to the current instance
+        need to be completely refreshed
         """
 
         for child_element in self._outer_frame.winfo_children():
@@ -137,8 +138,8 @@ class Component(Extendable, ABC):
 
     def update(self) -> None:
         """
-        This method should be invoked externally if necessary,
-        In situations where ._update() needs to be carried out immediately rather than at the next interval
+        This method is optional and should be invoked externally if necessary,
+        in situations where ._update() needs to be carried out immediately rather than at the next update_interval
         """
 
         if not self.exists:
