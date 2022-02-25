@@ -8,9 +8,9 @@ from ..extensions import GridHelper
 class NumberStepper(Component.with_extensions(GridHelper)):
     def __init__(self, container, get_data=None, on_change=(lambda stepper, increment_amount: None),
                  text_format="{0}", step_amounts=(1,), limits=(None, None), is_horizontal=True,
-                 update_interval=None, styles=None):
+                 update_interval_ms=None, styles=None):
         super().__init__(container, get_data=get_data, on_change=on_change,
-                         update_interval=update_interval, styles=styles)
+                         update_interval_ms=update_interval_ms, styles=styles)
 
         self.text_format = text_format
 

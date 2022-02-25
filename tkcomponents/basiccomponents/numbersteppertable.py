@@ -10,14 +10,14 @@ class NumberStepperTable(Component.with_extensions(GridHelper)):
     def __init__(self, container, axis_labels, axis_values,
                  get_data=None, on_change=(lambda x_value, y_value, stepper, increment_amount: None),
                  text_format="{0}", step_amounts=(1,), limits=(None, None), is_horizontal=True,
-                 update_interval=None, styles=None):
+                 update_interval_ms=None, styles=None):
         super().__init__(container, get_data=get_data, on_change=on_change, styles=styles)
 
         self._stepper_kwargs = {
             "text_format": text_format,
             "step_amounts": step_amounts,
             "limits": limits,
-            "update_interval": update_interval,
+            "update_interval_ms": update_interval_ms,
             "is_horizontal": is_horizontal,
             "styles": styles.get("number_stepper", {})
         }

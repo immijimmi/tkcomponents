@@ -8,9 +8,9 @@ class ProgressBar(Component.with_extensions(GridHelper)):
     RESOLUTION = 10000
 
     def __init__(self, container, get_data, on_change=lambda bar: None, is_reversed=False,
-                 update_interval=15, styles=None):
+                 update_interval_ms=15, styles=None):
         super().__init__(container, get_data=get_data, on_change=on_change,
-                         update_interval=update_interval, styles=styles)
+                         update_interval_ms=update_interval_ms, styles=styles)
 
         self.is_reversed = is_reversed
         self.is_expired = False

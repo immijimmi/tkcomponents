@@ -12,7 +12,7 @@ class Component(Extendable, ABC):
 
     def __init__(self, container: Widget,
                  get_data: Optional[Callable[["Component"], Any]] = None, on_change: Callable = lambda: None,
-                 update_interval: Optional[int] = None, styles: Optional[Dict[str, dict]] = None):
+                 update_interval_ms: Optional[int] = None, styles: Optional[Dict[str, dict]] = None):
         super().__init__()
 
         self._container = container
@@ -20,7 +20,7 @@ class Component(Extendable, ABC):
         self._outer_frame = Frame(self._container)
         self._frame = None  # Add child elements to this frame in ._render()
 
-        # Allow the outer frame to expand to fill the container
+        # Allows the outer frame to expand to fill the container
         self._outer_frame.rowconfigure(0, weight=1)
         self._outer_frame.columnconfigure(0, weight=1)
 
@@ -37,16 +37,21 @@ class Component(Extendable, ABC):
         styles = styles or {}
         self.styles["frame"] = styles.get("frame", {})
 
-        # Use this attribute to store references to any child elements
+        """
+        Use this attribute to store references to any child elements as needed.
+        Any data within should be cleared at the top of .render()
+        (`self.children["element_key"] = None` for each child),
+        to prevent unintended behaviour due to lingering references to old child elements
+        """
         self.children = {}
 
-        self._update_interval = update_interval  # Milliseconds
+        self._update_interval_ms = update_interval_ms
 
         """
         The below function should receive this component instance as a parameter and return any data from the
         application state that is needed by this component.
-        If it is set to None rather than a function, this indicates that there is no outside data source.
-        Other aspects of this component (styles, etc.) can be edited during the execution of this function.
+        Can be None rather than a function, which indicates that there is no need for a data source in the component.
+        Other aspects of this component (styles, etc.) can be edited by this function.
         """
         self._get_data = get_data
 
@@ -121,7 +126,7 @@ class Component(Extendable, ABC):
         """
         This method should be invoked externally, and the returned frame have pack() or grid() called on it.
         It will always need to be called at least once, when setting up/populating the parent widget
-        to the current instance, but can be called again if child widgets to the current instance
+        to the current instance, but can be called again if its child widgets
         need to be completely refreshed
         """
 
@@ -131,15 +136,15 @@ class Component(Extendable, ABC):
 
         self._render()
 
-        if self._update_interval:
-            self._frame.after(self._update_interval, self._update_loop)
+        if self._update_interval_ms:
+            self._frame.after(self._update_interval_ms, self._update_loop)
 
         return self._outer_frame
 
     def update(self) -> None:
         """
         This method is optional and should be invoked externally if necessary,
-        in situations where ._update() needs to be carried out immediately rather than at the next update_interval
+        in situations where ._update() needs to be carried out immediately rather than at the next update interval
         """
 
         if not self.exists:
@@ -160,8 +165,8 @@ class Component(Extendable, ABC):
         if not self.exists:
             return
 
-        if self._update_interval:
-            self._frame.after(self._update_interval, self._update_loop)
+        if self._update_interval_ms:
+            self._frame.after(self._update_interval_ms, self._update_loop)
 
         self._update()
 
@@ -184,7 +189,7 @@ class Component(Extendable, ABC):
         """
         Overridable method.
         Handles creating a new blank frame to store in self._frame at the top of each render() call.
-        Only needs overriding if this blank frame needs extra base functionality
+        Only needs overriding if this blank frame requires extra base functionality
         before any child components are rendered to it
         """
 

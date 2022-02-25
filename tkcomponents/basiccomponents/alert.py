@@ -6,9 +6,9 @@ from .constants import Constants
 
 
 class Alert(TimedFrame.with_extensions(GridHelper)):
-    def __init__(self, container, duration, get_data, on_expire=lambda alert: None, update_interval=None, styles=None):
+    def __init__(self, container, duration, get_data, on_expire=lambda alert: None, update_interval_ms=None, styles=None):
         super().__init__(container, duration, on_expire=on_expire, get_data=get_data,
-                         update_interval=update_interval, styles=styles)
+                         update_interval_ms=update_interval_ms, styles=styles)
 
         styles = styles or {}
         self.styles["label"] = styles.get("label", {})

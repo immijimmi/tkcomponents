@@ -5,9 +5,9 @@ from ..component import Component
 
 class ToggleButton(Component):
     def __init__(self, container, text_values=None, get_data=None, on_change=(lambda button: None),
-                 update_interval=None, styles=None):
+                 update_interval_ms=None, styles=None):
         super().__init__(container, get_data=get_data, on_change=on_change,
-                         update_interval=update_interval, styles=styles)
+                         update_interval_ms=update_interval_ms, styles=styles)
 
         text_values = {} if not text_values else text_values
         self._text_values = {

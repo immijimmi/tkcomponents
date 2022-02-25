@@ -5,9 +5,9 @@ from ..component import Component
 
 class LabelWrapper(Component):
     def __init__(self, container, get_data,
-                 update_interval=None, styles=None):
+                 update_interval_ms=None, styles=None):
         super().__init__(container, get_data=get_data,
-                         update_interval=update_interval, styles=styles)
+                         update_interval_ms=update_interval_ms, styles=styles)
 
         styles = styles or {}
         self.styles["label"] = styles.get("label", {})

@@ -16,7 +16,7 @@ from tkcomponents import Component
 
 class Counter(Component):
     def __init__(self, container):
-        super().__init__(container, update_interval=250)  # The component will update 4 times per second
+        super().__init__(container, update_interval_ms=250)  # The component will update 4 times per second
 
         self._count__var = IntVar()
         self._count__var.set(0)

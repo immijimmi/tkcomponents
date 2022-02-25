@@ -7,13 +7,13 @@ from ..basiccomponents.progressbar import ProgressBar
 
 
 class TimedFrame(Component, ABC):
-    def __init__(self, container, duration, on_expire=lambda timed_frame: None, get_data=None, on_change=lambda: None,
-                 update_interval=None, styles=None):
+    def __init__(self, container, duration_ms, on_expire=lambda timed_frame: None, get_data=None, on_change=lambda: None,
+                 update_interval_ms=None, styles=None):
         super().__init__(container, get_data=get_data, on_change=on_change,
-                         update_interval=update_interval, styles=styles)
+                         update_interval_ms=update_interval_ms, styles=styles)
 
         self.started = datetime.now()
-        self.duration = duration  # Provide in milliseconds, as with update_interval
+        self.duration_ms = duration_ms
 
         self._on_expire = on_expire
 
@@ -24,7 +24,7 @@ class TimedFrame(Component, ABC):
     def _refresh_frame(self):
         def get_data__progress_bar(bar):
             elapsed = datetime.now() - self.started
-            elapsed_proportion = min(1, (elapsed.total_seconds() * 1000) / self.duration)
+            elapsed_proportion = min(1, (elapsed.total_seconds() * 1000) / self.duration_ms)
             return elapsed_proportion
 
         self.children["progress_bar"] = None
