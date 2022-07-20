@@ -9,7 +9,7 @@ setup(
         "tkcomponents", "tkcomponents.extensions", "tkcomponents.basiccomponents", "tkcomponents.abstractcomponents",
         "tkcomponents.basiccomponents.classes"
     ],
-    version="2.0.0",
+    version="2.1.0",
     license="MIT",
     description="An OOP framework for Tkinter, inspired by React",
     long_description_content_type="text/markdown",
@@ -22,7 +22,7 @@ setup(
         'ui', 'gui', 'graphical', 'user', 'interface'
     ],
     install_requires=[
-        'objectextensions~=1.1.0'
+        'objectextensions~=1.2.0'
     ],
     classifiers=[
         "Development Status :: 4 - Beta",

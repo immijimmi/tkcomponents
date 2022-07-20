@@ -7,13 +7,13 @@ from ..component import Component
 
 class GridHelper(Extension):
     @staticmethod
+    def can_extend(target_cls):
+        return issubclass(target_cls, Component)
+
+    @staticmethod
     def extend(target_cls):
         Extension._set(target_cls, "_apply_frame_stretch", GridHelper.__apply_frame_stretch)
         Extension._set(target_cls, "_apply_dividers", GridHelper.__apply_dividers)
-
-    @staticmethod
-    def can_extend(target_cls):
-        return issubclass(target_cls, Component)
 
     def __apply_frame_stretch(self, rows: Iterable[int] = (), columns: Iterable[int] = (), weight: int = 1) -> None:
         """
