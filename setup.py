@@ -17,7 +17,7 @@ setup(
     author="immijimmi",
     author_email="imranhamid99@msn.com",
     url="https://github.com/immijimmi/tkcomponents",
-    download_url="https://github.com/immijimmi/tkcomponents/archive/refs/tags/v2.0.0.tar.gz",
+    download_url="https://github.com/immijimmi/tkcomponents/archive/refs/tags/v2.1.0.tar.gz",
     keywords=[
         'ui', 'gui', 'graphical', 'user', 'interface'
     ],
