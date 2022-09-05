@@ -22,7 +22,7 @@ setup(
         'ui', 'gui', 'graphical', 'user', 'interface'
     ],
     install_requires=[
-        'objectextensions~=1.2.0'
+        'objectextensions~=2.0.0'
     ],
     classifiers=[
         "Development Status :: 4 - Beta",
