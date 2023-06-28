@@ -1,7 +1,7 @@
 from tkinter import Button
 from functools import partial
 
-from ..abstractcomponents.verticalscrollframe import VerticalScrollFrame
+from .verticalscrollframe import VerticalScrollFrame
 
 
 class ButtonListBox(VerticalScrollFrame):

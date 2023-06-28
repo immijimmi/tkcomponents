@@ -1,7 +1,7 @@
 from tkinter import StringVar, Label, Button
 
 from ..extensions import GridHelper
-from ..abstractcomponents.timedframe import TimedFrame
+from .timedframe import TimedFrame
 from .constants import Constants
 
 
