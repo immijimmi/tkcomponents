@@ -18,22 +18,28 @@ class Draggable(Component, ABC):
 
                 self.bind("<Button-1>", partial(dnd_start, self))
 
-            def dnd_accept(self, source, event):
+            @staticmethod  # Methods must be static to prevent shadowing of Draggable's `self` variable
+            def dnd_accept(source, event):
                 return self.dnd_accept(source, event)
 
-            def dnd_motion(self, source, event):
+            @staticmethod
+            def dnd_motion(source, event):
                 return self.dnd_motion(source, event)
 
-            def dnd_leave(self, source, event):
+            @staticmethod
+            def dnd_leave(source, event):
                 return self.dnd_leave(source, event)
 
-            def dnd_enter(self, source, event):
+            @staticmethod
+            def dnd_enter(source, event):
                 return self.dnd_enter(source, event)
 
-            def dnd_commit(self, source, event):
+            @staticmethod
+            def dnd_commit(source, event):
                 return self.dnd_commit(source, event)
 
-            def dnd_end(self, source, event):
+            @staticmethod
+            def dnd_end(source, event):
                 return self.dnd_end(source, event)
 
         self._frame = DraggableFrame(self._outer_frame, **self.styles["frame"])
