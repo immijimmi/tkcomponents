@@ -8,6 +8,8 @@ from ..component import Component
 
 class Draggable(Component, ABC):
     def _refresh_frame(self) -> None:
+        draggable_self = self  # renamed variable to prevent shadowing in inner class below
+
         class DraggableFrame(Frame):
             """
             Custom Frame class which simply defers its drag and drop lifecycle methods to the parent component
@@ -16,9 +18,9 @@ class Draggable(Component, ABC):
             def __init__(self, container, *args, **kwargs):
                 super().__init__(container, *args, **kwargs)
 
-                self.bind("<Button-1>", partial(dnd_start, self))
+                self.bind("<Button-1>", partial(dnd_start, draggable_self))
 
-            @staticmethod  # Methods must be static to prevent shadowing of Draggable's `self` variable
+            @staticmethod
             def dnd_accept(source, event):
                 return self.dnd_accept(source, event)
 
