@@ -19,22 +19,22 @@ class Draggable(Component, ABC):
                 self.bind("<Button-1>", partial(dnd_start, self))
 
             def dnd_accept(self, source, event):
-                return self.dnd_accept
+                return self.dnd_accept(source, event)
 
             def dnd_motion(self, source, event):
-                return self.dnd_motion
+                return self.dnd_motion(source, event)
 
             def dnd_leave(self, source, event):
-                return self.dnd_leave
+                return self.dnd_leave(source, event)
 
             def dnd_enter(self, source, event):
-                return self.dnd_enter
+                return self.dnd_enter(source, event)
 
             def dnd_commit(self, source, event):
-                return self.dnd_commit
+                return self.dnd_commit(source, event)
 
             def dnd_end(self, source, event):
-                return self.dnd_end
+                return self.dnd_end(source, event)
 
         self._frame = DraggableFrame(self._outer_frame, **self.styles["frame"])
 
