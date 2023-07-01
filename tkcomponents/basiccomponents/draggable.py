@@ -13,8 +13,8 @@ class Draggable(Component, ABC):
         if `do_include_children` is True) to this component's drag-and-drop functionality.
 
         In order to make this Component itself draggable, this method should be called and passed
-        `self._frame` at the top of `._render()`. If this is not done, this component will still be capable of
-        interacting with other dragged widgets but will not itself be draggable
+        `self._frame` somwhere during the execution of `._render()`. If this is not done, this component will still be
+        capable of interacting with other dragged widgets but will not itself be draggable
 
         In order to bind another Component object to this Component's drag-and-drop functionality,
         this method can be called and passed the Frame widget returned by that Component object's `.render()` method
