@@ -23,7 +23,7 @@ class Draggable(Component, ABC):
         widget.bind("<Button-1>", partial(dnd_start, self))
 
         if do_include_children:
-            widgets_to_add = [*widget.winfo_children]
+            widgets_to_add = widget.winfo_children()
 
             while widgets_to_add:
                 child_widgets_to_add = []
