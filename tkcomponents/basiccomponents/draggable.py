@@ -7,7 +7,7 @@ from ..component import Component
 
 
 class Draggable(Component, ABC):
-    def add_draggable_widget(self, widget, do_include_children: bool = True) -> None:
+    def add_draggable_widget(self, widget, do_include_children: bool = False) -> None:
         """
         This method binds an additional tkinter widget (and all of its children recursively,
         if `do_include_children` is True) to this component's drag-and-drop functionality.
