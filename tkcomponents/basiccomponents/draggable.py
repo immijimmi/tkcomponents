@@ -7,46 +7,29 @@ from ..component import Component
 
 
 class Draggable(Component, ABC):
-    def _refresh_frame(self) -> None:
-        draggable_self = self  # renamed variable to prevent shadowing in inner class below
+    def add_draggable_widget(self, widget, do_include_children: bool = True) -> None:
+        """
+        This method binds an additional tkinter widget (and all of its children recursively,
+        if `do_include_children` is True) to this component's drag-and-drop functionality.
 
-        class DraggableFrame(Frame):
-            """
-            Custom Frame class which simply defers its drag and drop lifecycle methods to the parent component
-            """
+        In order to bind another Component object to this Component's drag-and-drop functionality,
+        this method should be called and passed the Frame widget returned by that Component object's `.render()` method
+        """
 
-            def __init__(self, container, *args, **kwargs):
-                super().__init__(container, *args, **kwargs)
+        widget.bind("<Button-1>", partial(dnd_start, self))
 
-                self.bind("<Button-1>", partial(dnd_start, draggable_self))
+        if do_include_children:
+            widgets_to_add = [*widget.winfo_children]
 
-            @staticmethod
-            def dnd_accept(source, event):
-                return self.dnd_accept(source, event)
+            while widgets_to_add:
+                child_widgets_to_add = []
 
-            @staticmethod
-            def dnd_motion(source, event):
-                return self.dnd_motion(source, event)
+                for widget_to_add in widgets_to_add:
+                    widget_to_add.bind("<Button-1>", partial(dnd_start, self))
 
-            @staticmethod
-            def dnd_leave(source, event):
-                return self.dnd_leave(source, event)
+                    child_widgets_to_add += widget_to_add.winfo_children()
 
-            @staticmethod
-            def dnd_enter(source, event):
-                return self.dnd_enter(source, event)
-
-            @staticmethod
-            def dnd_commit(source, event):
-                return self.dnd_commit(source, event)
-
-            @staticmethod
-            def dnd_end(source, event):
-                return self.dnd_end(source, event)
-
-        self._frame = DraggableFrame(self._outer_frame, **self.styles["frame"])
-
-        self._frame.grid(row=0, column=0, sticky="nswe")
+                widgets_to_add = child_widgets_to_add
 
     def dnd_accept(self, source, event):
         """
@@ -95,3 +78,44 @@ class Draggable(Component, ABC):
         """
 
         pass
+
+    def _refresh_frame(self) -> None:
+        draggable_self = self  # renamed variable to prevent shadowing in inner class below
+
+        class DraggableFrame(Frame):
+            """
+            Custom Frame class which simply defers its drag and drop lifecycle methods to the parent component
+            """
+
+            def __init__(self, container, *args, **kwargs):
+                super().__init__(container, *args, **kwargs)
+
+                draggable_self.add_draggable_widget(self, do_include_children=False)
+
+            @staticmethod
+            def dnd_accept(source, event):
+                return self.dnd_accept(source, event)
+
+            @staticmethod
+            def dnd_motion(source, event):
+                return self.dnd_motion(source, event)
+
+            @staticmethod
+            def dnd_leave(source, event):
+                return self.dnd_leave(source, event)
+
+            @staticmethod
+            def dnd_enter(source, event):
+                return self.dnd_enter(source, event)
+
+            @staticmethod
+            def dnd_commit(source, event):
+                return self.dnd_commit(source, event)
+
+            @staticmethod
+            def dnd_end(source, event):
+                return self.dnd_end(source, event)
+
+        self._frame = DraggableFrame(self._outer_frame, **self.styles["frame"])
+
+        self._frame.grid(row=0, column=0, sticky="nswe")
