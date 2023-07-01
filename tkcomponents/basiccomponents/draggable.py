@@ -9,11 +9,15 @@ from ..component import Component
 class Draggable(Component, ABC):
     def add_draggable_widget(self, widget, do_include_children: bool = False) -> None:
         """
-        This method binds an additional tkinter widget (and all of its children recursively,
+        This method binds any tkinter widget (and all of its children recursively,
         if `do_include_children` is True) to this component's drag-and-drop functionality.
 
+        In order to make this Component itself draggable, this method should be called and passed
+        `self._frame` at the top of `._render()`. If this is not done, this component will still be capable of
+        interacting with other dragged widgets but will not itself be draggable
+
         In order to bind another Component object to this Component's drag-and-drop functionality,
-        this method should be called and passed the Frame widget returned by that Component object's `.render()` method
+        this method can be called and passed the Frame widget returned by that Component object's `.render()` method
         """
 
         widget.bind("<Button-1>", partial(dnd_start, self))
@@ -86,11 +90,6 @@ class Draggable(Component, ABC):
             """
             Custom Frame class which simply defers its drag and drop lifecycle methods to the parent component
             """
-
-            def __init__(self, container, *args, **kwargs):
-                super().__init__(container, *args, **kwargs)
-
-                draggable_self.add_draggable_widget(self, do_include_children=False)
 
             @staticmethod
             def dnd_accept(source, event):
