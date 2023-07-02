@@ -13,4 +13,3 @@ from .labelwrapper import LabelWrapper
 
 from .timedframe import TimedFrame
 from .verticalscrollframe import VerticalScrollFrame
-from .draggable import Draggable
