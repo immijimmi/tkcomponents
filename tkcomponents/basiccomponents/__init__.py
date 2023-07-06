@@ -1,6 +1,6 @@
 from .constants import Constants
 from .togglebutton import ToggleButton
-from .numberstepper import NumberStepper
+from .stepper import Stepper
 from .timercontrol import TimerControl
 from .textcarousel import TextCarousel
 from .datestepper import DateStepper
