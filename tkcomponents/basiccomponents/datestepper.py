@@ -8,10 +8,14 @@ from .classes.dateticker import DateTicker
 
 
 class DateStepper(Component.with_extensions(GridHelper)):
-    def __init__(self, container, date_text_format="%Y/%m/%d",
-                 get_data=None, on_change=(lambda stepper, increment_amount: None), update_interval_ms=None, styles=None):
-        super().__init__(container, get_data=get_data, on_change=on_change,
-                         update_interval_ms=update_interval_ms, styles=styles)
+    def __init__(
+            self, container, date_text_format="%Y/%m/%d",
+            get_data=None, on_change=(lambda stepper, increment_amount: None), update_interval_ms=None, styles=None
+    ):
+        super().__init__(
+            container, get_data=get_data, on_change=on_change,
+            update_interval_ms=update_interval_ms, styles=styles
+        )
 
         self.date_text_format = date_text_format
 
