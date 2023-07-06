@@ -35,13 +35,13 @@ class Stepper(Component.with_extensions(GridHelper)):
         self.value = self._get_data(self) if self._get_data else 0
 
         self._label_var = StringVar()
-        self._label_var.set(self.format_label(self.value))
+        self._label_var.set(self.format_label(self))
 
     def _update(self):
         if self._get_data:
             self.value = self._get_data(self)
 
-        self._label_var.set(self.format_label(self.value))
+        self._label_var.set(self.format_label(self))
 
         self._set_button_states()
 
