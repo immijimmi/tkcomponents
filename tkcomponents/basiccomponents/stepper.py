@@ -126,7 +126,9 @@ class Stepper(Component.with_extensions(GridHelper)):
         for (step_label, step_amount), button in all_buttons:
             value_after_button_press = self.value + step_amount
 
-            if (value_after_button_press < self.min) or (value_after_button_press > self.max):
+            if (self.min is not None) and (value_after_button_press < self.min):
+                button.config(state="disabled")
+            elif (self.max is not None) and (value_after_button_press > self.max):
                 button.config(state="disabled")
             else:
                 button.config(state="normal")
