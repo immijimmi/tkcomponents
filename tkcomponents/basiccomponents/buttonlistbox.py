@@ -1,14 +1,16 @@
 from tkinter import Button
 from functools import partial
 
-from .verticalscrollframe import VerticalScrollFrame
+from .scrollframe import ScrollFrame
 
 
-class ButtonListBox(VerticalScrollFrame):
-    def __init__(self, container, current_value, get_height,
+class ButtonListBox(ScrollFrame):
+    def __init__(self, container, current_value, get_size,
                  get_data, on_change=(lambda picker, new_value: None), styles=None):
-        super().__init__(container, get_height,
-                         get_data=get_data, on_change=on_change, styles=styles)
+        super().__init__(
+            container, get_size, is_scroll_vertical=True,
+            get_data=get_data, on_change=on_change, styles=styles
+        )
 
         styles = styles or {}
         self.styles["button"] = styles.get("button", {})

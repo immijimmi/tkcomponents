@@ -12,4 +12,4 @@ from .stringeditor import StringEditor
 from .labelwrapper import LabelWrapper
 
 from .timedframe import TimedFrame
-from .verticalscrollframe import VerticalScrollFrame
+from .scrollframe import ScrollFrame
