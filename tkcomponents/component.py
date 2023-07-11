@@ -1,8 +1,8 @@
-from objectextensions import Extendable
+from objectextensions import Extendable, Decorators
 
 from abc import ABC
 from tkinter import Frame, Widget
-from typing import Optional, Any, Callable, Dict
+from typing import Optional, Any, Callable
 
 
 class Component(Extendable, ABC):
@@ -10,9 +10,22 @@ class Component(Extendable, ABC):
     A blank base component which extends lifecycle methods to be overriden as necessary
     """
 
-    def __init__(self, container: Widget,
-                 get_data: Optional[Callable[["Component"], Any]] = None, on_change: Callable = lambda: None,
-                 update_interval_ms: Optional[int] = None, styles: Optional[Dict[str, dict]] = None):
+    """
+    This attribute can optionally be overwritten in each subclass, with a new dictionary containing
+    any *additional* style labels (and their default values) those subclasses expect to receive and use inside
+    `._render()`. Styles from all classes in the hierarchy which define styles under this attribute name will be
+    aggregated into `self.styles`, so that they are all available to be used as necessary in each successive subclass
+    """
+    _styles: dict[str, dict[str, Any]] = {
+        "frame": {}
+    }
+
+    def __init__(
+            self, container: Widget,
+            get_data: Optional[Callable[["Component"], Any]] = None,
+            on_change: Callable[["Component", Any], None] = (lambda component, event_data: None),
+            update_interval_ms: Optional[int] = None, styles: Optional[dict[str, dict[str, Any]]] = None
+    ):
         super().__init__()
 
         self._container = container
@@ -20,52 +33,50 @@ class Component(Extendable, ABC):
         self._outer_frame = Frame(self._container)
         self._frame = None  # Add child elements to this frame in ._render()
 
-        # Allows the outer frame to expand to fill the container
+        # Allows the outer frame to expand to fill the containing area
         self._outer_frame.rowconfigure(0, weight=1)
         self._outer_frame.columnconfigure(0, weight=1)
 
-        """
-        All element styles should be stored here, as their own dicts under a relevant string key.
-        self.styles can contain multiple levels of nesting, so that any styles that are passed down to rendered
-        child components can then be passed down in turn to the further child components
+        # All widget/component styles are stored in this dictionary, as their own dicts under a relevant string key.
+        self.styles: dict[str, dict[str, Any]] = {}
 
-        Any data supplied in the `styles` param when .__init__() is called must be manually added to self.styles in a
-        constructor somewhere in the inheritance chain, otherwise it will be discarded.
-        """
-        self.styles: Dict[str, dict] = {}
-
+        # Populating `self.styles`
         styles = styles or {}
-        self.styles["frame"] = styles.get("frame", {})
+        for style_label, default_style_value in self.registered_styles.items():
+            self.styles[style_label] = styles.pop(style_label, default_style_value)
 
-        """
-        Use this attribute to store references to any child elements as needed.
-        Any data within should be cleared at the top of .render()
-        (`self.children["element_key"] = None` for each child),
-        to prevent unintended behaviour due to lingering references to old child elements
-        """
-        self.children = {}
+        if styles:  # There should be no remaining data in here after removing any styles registered in `_styles`
+            raise ValueError(f"unused styles passed into component: {tuple(styles.keys())}")
+
+        self._children = {}
 
         self._update_interval_ms = update_interval_ms
 
         """
-        The below function should receive this component instance as a parameter and return any data from the
-        application state that is needed by this component.
+        The below function should receive this component instance as a parameter and return any external data
+        that is needed by this component - this may be as simple as returning static initialisation params, or
+        as complicated as processing the application state to provide a tailored value each time it is called.
+
+        It should be called only from within the constructor and within `._update()` (if necessary).
+
         Can be None rather than a function, which indicates that there is no need for a data source in the component.
-        Other aspects of this component (styles, etc.) can be edited by this function.
+        Other aspects of this component (styles, etc.) may be edited by this function as needed
         """
         self._get_data = get_data
 
         """
         When the state of this component changes, the below function should be called and passed this component instance
         and any event data as parameters.
-        The function should perform any additional external work needed.
+        This function is also responsible for performing any additional external work that may be needed as a result
+        of the event that has triggered it
         """
         self._on_change = on_change
 
     @property
     def exists(self) -> bool:
         """
-        Should be used to check that the component has not been destroyed, before its state is altered in any way
+        Used to check that the component has not been destroyed before performing work on it, for example if a parent
+        component has executed a fresh `.render()`
         """
 
         return self._outer_frame.winfo_exists()
@@ -73,7 +84,7 @@ class Component(Extendable, ABC):
     @property
     def is_rendered(self) -> bool:
         """
-        Used internally to check that a component has rendered its contained widgets, before checking their details
+        Used internally to check that a component has rendered its contained widgets, before accessing them
         """
 
         if self._frame is None:
@@ -95,7 +106,7 @@ class Component(Extendable, ABC):
     @property
     def height_clearance(self) -> Optional[int]:
         """
-        Represents the amount of vertical space in the widget (values such as padding and border are removed)
+        Represents the amount of vertical space inside the widget (values such as padding and border are removed)
         """
 
         if not self.is_rendered:
@@ -110,7 +121,7 @@ class Component(Extendable, ABC):
     @property
     def width_clearance(self) -> Optional[int]:
         """
-        Represents the amount of horizontal space in the widget (values such as padding and border are removed)
+        Represents the amount of horizontal space inside the widget (values such as padding and border are removed)
         """
 
         if not self.is_rendered:
@@ -122,18 +133,44 @@ class Component(Extendable, ABC):
 
         return self._frame.winfo_width() - total_buffer
 
+    @property
+    def children(self) -> dict:
+        """
+        Use this dictionary to store references to any child widgets/components as needed, within `._render()`.
+        Any stored data will be automatically cleared immediately before the next `._render()` call,
+        to prevent unintended behaviour due to lingering references to old child elements
+        """
+
+        return self._children
+
+    @Decorators.classproperty
+    def registered_styles(cls) -> dict[str, dict[str, Any]]:
+        styles = {}
+
+        for included_cls in cls.__mro__:
+            if included_cls_styles := included_cls.__dict__.get("_styles", None):
+                for style_label, default_style_value in included_cls_styles.items():
+                    if style_label in styles:
+                        raise KeyError(
+                            f"duplicate style label defined in multiple classes in the hierarchy: {style_label}"
+                        )
+
+                    styles[style_label] = default_style_value
+
+        return styles
+
     def render(self) -> Frame:
         """
-        This method should be invoked externally, and the returned frame have pack() or grid() called on it.
-        It will always need to be called at least once, when setting up/populating the parent widget
-        to the current instance, but can be called again if its child widgets
-        need to be completely refreshed
+        This method should be invoked externally, and the returned frame have `.pack()` or `.grid()` called on it.
+        It will always need to be called at least once, from the containing scope, but can be called again
+        if its child widgets need to be completely refreshed
         """
 
         for child_element in self._outer_frame.winfo_children():
             child_element.destroy()
         self._refresh_frame()
 
+        self.children.clear()
         self._render()
 
         if self._update_interval_ms:
@@ -144,7 +181,7 @@ class Component(Extendable, ABC):
     def update(self) -> None:
         """
         This method is optional and should be invoked externally if necessary,
-        in situations where ._update() needs to be carried out immediately rather than at the next update interval
+        in situations where `._update()` needs to be carried out immediately rather than at the next update interval
         """
 
         if not self.exists:
@@ -179,7 +216,7 @@ class Component(Extendable, ABC):
     def _needs_render(self) -> bool:
         """
         Overridable method.
-        Should return a True value only once per time a re-render is required.
+        Should return a `True` value only once per time a re-render is required.
         If the component will never need to poll for a re-render, this method need not be overridden
         """
 
@@ -188,7 +225,7 @@ class Component(Extendable, ABC):
     def _refresh_frame(self) -> None:
         """
         Overridable method.
-        Handles creating a new blank frame to store in self._frame at the top of each render() call.
+        Handles creating a new blank frame to store as `self._frame` at the top of each `.render()` call.
         Only needs overriding if this blank frame requires extra base functionality
         before any child components are rendered to it
         """
@@ -210,7 +247,7 @@ class Component(Extendable, ABC):
     def _render(self) -> None:
         """
         Overridable method.
-        Any child components should be rendered to self._frame in this method
+        Any child components should be rendered to `self._frame` in this method
         """
 
         raise NotImplementedError
