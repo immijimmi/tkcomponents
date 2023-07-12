@@ -16,7 +16,7 @@ class Component(Extendable, ABC):
     `._render()`. Styles from all classes in the hierarchy which define styles under this attribute name will be
     aggregated into `self.styles`, so that they are all available to be used as necessary in each successive subclass
     """
-    _styles: dict[str, dict[str, Any]] = {
+    COMPONENT_STYLES: dict[str, dict[str, Any]] = {
         "frame": {}
     }
 
@@ -37,16 +37,20 @@ class Component(Extendable, ABC):
         self._outer_frame.rowconfigure(0, weight=1)
         self._outer_frame.columnconfigure(0, weight=1)
 
-        # All widget/component styles are stored in this dictionary, as their own dicts under a relevant string key.
+        """
+        All widget/component styles are stored in this dictionary, as their own dicts under a relevant string key.
+        Nesting may optionally be employed if desired to pass styles down through multiple layers of components
+        """
         self.styles: dict[str, dict[str, Any]] = {}
 
         # Populating `self.styles`
-        styles = styles or {}
+        styles_working = {**(styles or {})}
         for style_label, default_style_value in self.registered_styles.items():
-            self.styles[style_label] = styles.pop(style_label, default_style_value)
+            self.styles[style_label] = styles_working.pop(style_label, default_style_value)
 
-        if styles:  # There should be no remaining data in here after removing any styles registered in `_styles`
-            raise ValueError(f"unused styles passed into component: {tuple(styles.keys())}")
+        # There should be no remaining data in here after removing any styles also registered in `COMPONENT_STYLES`
+        if styles_working:
+            raise ValueError(f"unused styles passed into component: {tuple(styles_working.keys())}")
 
         self._children = {}
 
@@ -148,7 +152,7 @@ class Component(Extendable, ABC):
         styles = {}
 
         for included_cls in cls.__mro__:
-            if included_cls_styles := included_cls.__dict__.get("_styles", None):
+            if included_cls_styles := included_cls.__dict__.get("COMPONENT_STYLES", None):
                 for style_label, default_style_value in included_cls_styles.items():
                     if style_label in styles:
                         raise KeyError(
