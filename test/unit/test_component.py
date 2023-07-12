@@ -43,17 +43,22 @@ class TestComponent:
 
         height_pixels = base_button_height + (height_chars * default_char_height) + (pady * 2) + (borderwidth * 2)
 
-        parent = nested_button_cls(window, styles={"button_wrapper": {
-            "frame": {
-                "pady": pady,
-                "borderwidth": borderwidth
-            },
-            "button": {
-                "height": height_chars,
-                "pady": 0,
-                "borderwidth": 0
+        parent = nested_button_cls(
+            window,
+            styles={
+                "button_wrapper": {
+                    "frame": {
+                        "pady": pady,
+                        "borderwidth": borderwidth
+                    },
+                    "button": {
+                        "height": height_chars,
+                        "pady": 0,
+                        "borderwidth": 0
+                    }
+                }
             }
-        }})
+        )
         parent.render().pack(fill="both", expand=True)
         child = parent.children["button_wrapper"]
 
