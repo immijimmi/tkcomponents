@@ -230,8 +230,11 @@ class Component(Extendable, ABC):
         """
         Overridable method.
         Handles creating a new blank frame to store as `self._frame` at the top of each `.render()` call.
-        Only needs overriding if this blank frame requires extra base functionality
-        before any child components are rendered to it
+        Only needs overriding if this component requires extra base functionality before any child components
+        are rendered onto its surface.
+
+        Any overriding method should still set a new `Frame` object to `self._frame`, to be used
+        as the main surface to render child widgets to
         """
 
         self._frame = Frame(self._outer_frame, **self.styles["frame"])
