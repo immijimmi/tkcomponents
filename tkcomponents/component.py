@@ -172,9 +172,9 @@ class Component(Extendable, ABC):
 
         for child_element in self._outer_frame.winfo_children():
             child_element.destroy()
-        self._refresh_frame()
-
         self.children.clear()
+
+        self._refresh_frame()
         self._render()
 
         if self._update_interval_ms:
