@@ -8,15 +8,14 @@ class TestComponent:
     def test_exists(self, window, nested_button_cls):
         parent = nested_button_cls(window)
 
+        parent.render().pack()
         assert parent.exists
 
-        parent.render().pack()
         child = parent.children["button_wrapper"]
-
+        child.render().pack()
         assert child.exists
 
         parent.render()
-
         assert not child.exists
 
     def test_is_rendered(self, window, nested_button_cls):

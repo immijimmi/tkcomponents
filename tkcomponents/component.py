@@ -2,7 +2,7 @@ from objectextensions import Extendable, Decorators
 
 from abc import ABC
 from tkinter import Frame, Widget
-from typing import Optional, Any, Callable
+from typing import Optional, Any, Callable, Union
 
 
 class Component(Extendable, ABC):
@@ -21,21 +21,18 @@ class Component(Extendable, ABC):
     }
 
     def __init__(
-            self, container: Widget,
+            self, container: Optional[Union[Widget, "Component"]] = None,
             get_data: Optional[Callable[["Component"], Any]] = None,
             on_change: Callable[["Component", Any], None] = (lambda component, event_data: None),
             update_interval_ms: Optional[int] = None, styles: Optional[dict[str, dict[str, Any]]] = None
     ):
         super().__init__()
 
-        self._container = container
+        self._container = None
+        self._outer_frame = None
+        self._frame = None
 
-        self._outer_frame = Frame(self._container)
-        self._frame = None  # Add child elements to this frame in ._render()
-
-        # Allows the outer frame to expand to fill the containing area
-        self._outer_frame.rowconfigure(0, weight=1)
-        self._outer_frame.columnconfigure(0, weight=1)
+        self.container = container
 
         """
         All widget/component styles are stored in this dictionary, as their own dicts under a relevant string key.
@@ -77,13 +74,36 @@ class Component(Extendable, ABC):
         self._on_change = on_change
 
     @property
-    def exists(self) -> bool:
+    def container(self) -> Optional[Union[Widget, "Component"]]:
+        return self._container
+
+    @container.setter
+    def container(self, value: Optional[Union[Widget, "Component"]]) -> None:
+        if value is self._container:
+            return
+
+        if self._container is not None:
+            self.destroy()
+
+        self._container = value
+
+    @property
+    def frame(self) -> Optional[Widget]:
         """
-        Used to check that the component has not been destroyed before performing work on it, for example if a parent
-        component has executed a fresh `.render()`
+        Returns this component's inner frame, once it has rendered for the first time.
+        Add child elements to this frame in ._render()
         """
 
-        return self._outer_frame.winfo_exists()
+        return self._frame
+
+    @property
+    def exists(self) -> bool:
+        """
+        Typically used to check that the component has not been destroyed before performing work on it, for example if
+        it has just changed containers or if its containing component has executed a fresh `.render()`
+        """
+
+        return self._outer_frame and self._outer_frame.winfo_exists()
 
     @property
     def is_rendered(self) -> bool:
@@ -98,12 +118,18 @@ class Component(Extendable, ABC):
         return self._frame.winfo_exists()
 
     @property
-    def height(self) -> int:
+    def height(self) -> Optional[int]:
+        if not self.exists:
+            return None
+
         self._outer_frame.update()
         return self._outer_frame.winfo_height()
 
     @property
-    def width(self) -> int:
+    def width(self) -> Optional[int]:
+        if not self.exists:
+            return None
+
         self._outer_frame.update()
         return self._outer_frame.winfo_width()
 
@@ -170,10 +196,32 @@ class Component(Extendable, ABC):
         if its child widgets need to be completely refreshed
         """
 
-        for child_element in self._outer_frame.winfo_children():
-            child_element.destroy()
-        self.children.clear()
+        if self.exists:
+            # Clearing the outer frame
+            for child_element in self._outer_frame.winfo_children():
+                child_element.destroy()
 
+        else:
+            # Creating a new outer frame
+
+            if issubclass(type(self._container), type(self)):  # If the container is a Component object
+                if not self._container.is_rendered:
+                    raise RuntimeError(
+                        "cannot render component object - its containing component must first be rendered"
+                    )
+
+                container_surface = self._container.frame
+
+            # If the container is None (will result in the component rendering to a new tkinter window) or a Widget
+            else:
+                container_surface = self._container
+
+            self._outer_frame = Frame(container_surface)
+            # Allows the outer frame to expand to fill the containing area
+            self._outer_frame.rowconfigure(0, weight=1)
+            self._outer_frame.columnconfigure(0, weight=1)
+
+        self.children.clear()
         self._refresh_frame()
         self._render()
 
@@ -181,6 +229,14 @@ class Component(Extendable, ABC):
             self._frame.after(self._update_interval_ms, self._update_loop)
 
         return self._outer_frame
+
+    def destroy(self) -> None:
+        if self._outer_frame is not None:
+            self._outer_frame.destroy()
+            self._outer_frame = None
+
+        self._frame = None
+        self.children.clear()
 
     def update(self) -> None:
         """
@@ -238,7 +294,6 @@ class Component(Extendable, ABC):
         """
 
         self._frame = Frame(self._outer_frame, **self.styles["frame"])
-
         self._frame.grid(row=0, column=0, sticky="nswe")
 
     def _update(self) -> None:
